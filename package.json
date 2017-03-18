@@ -1,0 +1,15 @@
+{
+  "name": "webpacking",
+  "version": "1.0.0",
+  "description": "Learning webpack.",
+  "main": "app.js",
+  "scripts": {
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alexey Korkota",
+  "license": "MIT",
+  "devDependencies": {
+    "webpack": "^2.2.1"
+  }
+}
