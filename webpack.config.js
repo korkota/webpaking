@@ -30,6 +30,7 @@ module.exports = {
     new webpack.DefinePlugin({
       NODE_ENV: JSON.stringify(NODE_ENV)
     }),
+    new webpack.ContextReplacementPlugin(/node_modules\/moment\/locale/, /ru/),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
       minChunks: 2
