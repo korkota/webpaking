@@ -4,7 +4,8 @@
   "description": "Learning webpack.",
   "main": "app.js",
   "scripts": {
-    "build": "webpack",
+    "build": "webpack --config webpack.config.js",
+    "build:profile": "webpack --config webpack.config.js --profile --display-reasons --display-modules",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Alexey Korkota",
@@ -24,6 +25,7 @@
   "dependencies": {
     "babel-runtime": "^6.23.0",
     "lodash": "^4.17.4",
-    "moment": "^2.18.0"
+    "moment": "^2.18.0",
+    "whatwg-fetch": "^2.0.3"
   }
 }

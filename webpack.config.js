@@ -8,7 +8,7 @@ module.exports = {
 
   entry: {
     home: './home.js',
-    about: './about.js',
+    about: './about.js'
   },
 
   output: {
@@ -23,7 +23,7 @@ module.exports = {
     aggregateTimeout: 100
   },
 
-  devtool: NODE_ENV === 'development' ? 'eval-source-map' : 'source-map',
+  devtool: NODE_ENV === 'development' ? 'cheap-eval-source-map' : 'source-map',
 
   plugins: [
     new webpack.NoEmitOnErrorsPlugin(),
@@ -52,7 +52,8 @@ module.exports = {
           plugins: ['transform-runtime']
         }
       }
-    }]
+    }],
+    noParse: /node_modules\/(whatwg-fetch|moment\/locale)/
   }
 };
 
