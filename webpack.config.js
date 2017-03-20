@@ -8,7 +8,8 @@ module.exports = {
 
   entry: {
     home: './home.js',
-    about: './about.js'
+    about: './about.js',
+    vendor: 'whatwg-fetch'
   },
 
   output: {
@@ -36,7 +37,16 @@ module.exports = {
     new webpack.ContextReplacementPlugin(/node_modules\/moment\/locale/, /ru/),
     new webpack.optimize.CommonsChunkPlugin({
       name: 'common',
+      chunks: ['about', 'home'],
       minChunks: 2
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: Infinity
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'manifest',
+      minChunks: Infinity
     })
   ],
 
