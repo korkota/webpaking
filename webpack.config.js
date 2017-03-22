@@ -1,19 +1,24 @@
-"use strict";
+'use strict';
 
-const NODE_ENV = process.env.NODE_ENV || 'development';
+const path = require('path');
 const webpack = require('webpack');
 
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const APP_DIR = 'frontend';
+
+const dir = path.resolve.bind(path, __dirname);
+
 module.exports = {
-  context: __dirname + '/frontend',
+  context: dir(APP_DIR),
 
   entry: {
     home: './home.js',
     about: './about.js',
-    vendor: 'whatwg-fetch'
+    vendor: ['babel-polyfill/dist/polyfill.min.js', 'whatwg-fetch']
   },
 
   output: {
-    path: __dirname + '/public',
+    path: dir('public'),
     filename: '[name].js',
     library: '[name]'
   },
@@ -24,7 +29,7 @@ module.exports = {
     aggregateTimeout: 100
   },
 
-  devtool: NODE_ENV === 'development' ? 'cheap-eval-source-map' : 'source-map',
+  devtool: NODE_ENV === 'development' ? 'cheap-source-map' : 'source-map',
 
   plugins: [
     new webpack.NoEmitOnErrorsPlugin(),
@@ -58,12 +63,18 @@ module.exports = {
         loader: 'babel-loader',
         options: {
           babelrc: false,
-          presets: ['env'],
-          plugins: ['transform-runtime']
+          presets: ['env']
         }
       }
     }],
     noParse: /node_modules\/(whatwg-fetch|moment\/locale)/
+  },
+
+  resolve: {
+    modules: ['node_modules', 'legacy', dir(APP_DIR)],
+    alias: {
+      'work': 'godwhy/oldschool'
+    }
   }
 };
 
