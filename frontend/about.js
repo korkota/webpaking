@@ -19,7 +19,7 @@ async function test() {
 
 test();
 
-let work = require('imports-loader?workSettings=>{delay:500}!exports-loader?Work!work');
+let work = require('work');
 work();
 
 fetch('http://api.fixer.io/latest')

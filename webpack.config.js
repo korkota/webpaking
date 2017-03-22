@@ -4,12 +4,12 @@ const path = require('path');
 const webpack = require('webpack');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
-const APP_DIR = 'frontend';
+const APP_ROOT = 'frontend';
 
 const dir = path.resolve.bind(path, __dirname);
 
 module.exports = {
-  context: dir(APP_DIR),
+  context: dir(APP_ROOT),
 
   entry: {
     home: './home.js',
@@ -66,12 +66,23 @@ module.exports = {
           presets: ['env']
         }
       }
+    }, {
+      test: /legacy\/godwhy\/oldschool\.js$/,
+      use: [
+        {
+          loader: 'imports-loader',
+          options: 'workSettings=>{delay:500}'
+        }, {
+          loader: 'exports-loader',
+          options: 'Work'
+        }
+      ]
     }],
     noParse: /node_modules\/(whatwg-fetch|moment\/locale)/
   },
 
   resolve: {
-    modules: ['node_modules', 'legacy', dir(APP_DIR)],
+    modules: ['node_modules', 'legacy', dir(APP_ROOT)],
     alias: {
       'work': 'godwhy/oldschool'
     }
