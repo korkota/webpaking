@@ -78,7 +78,7 @@ module.exports = {
         }
       ]
     }],
-    noParse: /node_modules\/(whatwg-fetch|moment\/locale)/
+    noParse: /node_modules\/(whatwg-fetch|moment\/locale|babel-polyfill\/dist\/polyfill\.min)/
   },
 
   resolve: {
