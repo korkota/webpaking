@@ -81,8 +81,8 @@ module.exports = {
       ]
     }, {
       test: /\.(png|jpg|svg|ttf|eot|woff|woff2)$/,
-      loader: 'file-loader',
-      options: { name: '[path][name].[ext]' }
+      loader: 'url-loader',
+      options: { name: '[path][name].[ext]', limit: 4096 }
     }],
     noParse: /node_modules\/(whatwg-fetch|babel-polyfill\/dist\/polyfill\.min)/
   },

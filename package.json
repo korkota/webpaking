@@ -16,12 +16,12 @@
     "babel-loader": "^6.4.1",
     "babel-preset-env": "^1.2.2",
     "css-loader": "^0.27.3",
-    "file-loader": "^0.10.1",
     "jade": "^1.11.0",
     "jade-loader": "^0.8.0",
     "style-loader": "^0.16.0",
     "stylus": "^0.54.5",
     "stylus-loader": "^3.0.1",
+    "url-loader": "^0.5.8",
     "webpack": "^2.2.1"
   },
   "engines": {
@@ -31,6 +31,7 @@
   "private": true,
   "dependencies": {
     "babel-polyfill": "^6.23.0",
+    "flag-icon-css": "^2.8.0",
     "lodash": "^4.17.4",
     "moment": "^2.18.0",
     "whatwg-fetch": "^2.0.3"
