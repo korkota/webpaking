@@ -2,6 +2,7 @@
 
 import foo from './foo';
 import bar from './bar';
+import Menu from './menu';
 
 delay(() => {
   require.ensure([], () => {
@@ -11,3 +12,19 @@ delay(() => {
     alert(`${now}: home-${bar()}-${foo}`);
   })
 }, 5000 /*ms*/);
+
+const pandaMenu = new Menu({
+  title: 'Panda menu',
+  items: [{
+    text: 'Eggs',
+    href: '#eggs'
+  }, {
+    text: 'Meat',
+    href: '#meat'
+  }, {
+    text: 'Bamboo',
+    href: '#bamboo'
+  }]
+});
+
+document.body.appendChild(pandaMenu.elem);

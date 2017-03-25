@@ -4,12 +4,12 @@ const path = require('path');
 const webpack = require('webpack');
 
 const NODE_ENV = process.env.NODE_ENV || 'development';
-const APP_ROOT = 'frontend';
+const ROOT = 'frontend';
 
 const dir = path.resolve.bind(path, __dirname);
 
 module.exports = {
-  context: dir(APP_ROOT),
+  context: dir(ROOT),
 
   entry: {
     home: './home.js',
@@ -59,33 +59,38 @@ module.exports = {
     rules: [{
       test: /\.js$/,
       exclude: /(node_modules|bower_components)/,
-      use: {
-        loader: 'babel-loader',
-        options: {
-          babelrc: false,
-          presets: ['env']
-        }
-      }
+      loader: 'babel-loader',
+      options: { babelrc: false, presets: ['env'] }
     }, {
       test: /legacy\/godwhy\/oldschool\.js$/,
+      include: /legacy\//,
       use: [
-        {
-          loader: 'imports-loader',
-          options: 'workSettings=>{delay:500}'
-        }, {
-          loader: 'exports-loader',
-          options: 'Work'
-        }
+        { loader: 'imports-loader', options: 'workSettings=>{delay:500}' },
+        { loader: 'exports-loader', options: 'Work' }
       ]
+    }, {
+      test: /\.jade$/,
+      loader: 'jade-loader'
+    }, {
+      test: /\.styl$/,
+      use: [
+        { loader: 'style-loader' },
+        { loader: 'css-loader' },
+        { loader: 'autoprefixer-loader', options: { browsers: 'last 2 versions' } },
+        { loader: 'stylus-loader', options: 'resolve url' }
+      ]
+    }, {
+      test: /\.(png|jpg|svg|ttf|eot|woff|woff2)$/,
+      loader: 'file-loader',
+      options: { name: '[path][name].[ext]' }
     }],
-    noParse: /node_modules\/(whatwg-fetch|moment\/locale|babel-polyfill\/dist\/polyfill\.min)/
+    noParse: /node_modules\/(whatwg-fetch|babel-polyfill\/dist\/polyfill\.min)/
   },
 
   resolve: {
-    modules: ['node_modules', 'legacy', dir(APP_ROOT)],
-    alias: {
-      'work': 'godwhy/oldschool'
-    }
+    extensions: ['.jade', '.js', '.styl'],
+    modules: ['node_modules', 'legacy', dir(ROOT)],
+    alias: { 'work': 'godwhy/oldschool' }
   }
 };
 
