@@ -3,6 +3,7 @@
 import foo from './foo';
 import bar from './bar';
 import Menu from './menu';
+import linkTo from  './linkTo';
 
 delay(() => {
   require.ensure([], () => {
@@ -27,4 +28,5 @@ const pandaMenu = new Menu({
   }]
 });
 
+document.body.appendChild(linkTo('about'));
 document.body.appendChild(pandaMenu.elem);

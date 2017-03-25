@@ -1,12 +1,15 @@
 'use strict';
 
-const path = require('path');
-const webpack = require('webpack');
-
 const NODE_ENV = process.env.NODE_ENV || 'development';
-const ROOT = 'frontend';
 
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+
+const path = require('path');
 const dir = path.resolve.bind(path, __dirname);
+
+const ROOT = 'frontend';
+const ASSETS = 'public/assets';
 
 module.exports = {
   context: dir(ROOT),
@@ -18,42 +21,18 @@ module.exports = {
   },
 
   output: {
-    path: dir('public'),
+    path: dir(ASSETS),
+    publicPath: '/webpacking/' + ASSETS,
     filename: '[name].js',
+    chunkFilename: '[id].js',
     library: '[name]'
   },
 
-  watch: NODE_ENV === 'development',
-
-  watchOptions: {
-    aggregateTimeout: 100
+  resolve: {
+    extensions: ['.jade', '.js', '.styl'],
+    modules: ['node_modules', 'legacy', dir(ROOT)],
+    alias: { 'work': 'godwhy/oldschool' }
   },
-
-  devtool: NODE_ENV === 'development' ? 'cheap-source-map' : 'source-map',
-
-  plugins: [
-    new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.DefinePlugin({
-      NODE_ENV: JSON.stringify(NODE_ENV)
-    }),
-    new webpack.ProvidePlugin({
-      delay: 'lodash/delay'
-    }),
-    new webpack.ContextReplacementPlugin(/node_modules\/moment\/locale/, /ru/),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'common',
-      chunks: ['about', 'home'],
-      minChunks: 2
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'vendor',
-      minChunks: Infinity
-    }),
-    new webpack.optimize.CommonsChunkPlugin({
-      name: 'manifest',
-      minChunks: Infinity
-    })
-  ],
 
   module: {
     rules: [{
@@ -87,11 +66,45 @@ module.exports = {
     noParse: /node_modules\/(whatwg-fetch|babel-polyfill\/dist\/polyfill\.min)/
   },
 
-  resolve: {
-    extensions: ['.jade', '.js', '.styl'],
-    modules: ['node_modules', 'legacy', dir(ROOT)],
-    alias: { 'work': 'godwhy/oldschool' }
-  }
+  plugins: [
+    new webpack.NoEmitOnErrorsPlugin(),
+    new webpack.DefinePlugin({
+      NODE_ENV: JSON.stringify(NODE_ENV)
+    }),
+    new webpack.ProvidePlugin({
+      delay: 'lodash/delay'
+    }),
+    new webpack.ContextReplacementPlugin(/node_modules\/moment\/locale/, /ru/),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'common',
+      chunks: ['about', 'home'],
+      minChunks: 2
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'vendor',
+      minChunks: Infinity
+    }),
+    new webpack.optimize.CommonsChunkPlugin({
+      name: 'manifest',
+      minChunks: Infinity
+    }),
+    new HtmlWebpackPlugin({
+      filename: './home.html',
+      chunks: ['manifest', 'vendor', 'common', 'home']
+    }),
+    new HtmlWebpackPlugin({
+      filename: './about.html',
+      chunks: ['manifest', 'vendor', 'common', 'about']
+    })
+  ],
+
+  watch: NODE_ENV === 'development',
+
+  watchOptions: {
+    aggregateTimeout: 100
+  },
+
+  devtool: NODE_ENV === 'development' ? 'cheap-source-map' : 'source-map'
 };
 
 if (NODE_ENV === 'production') {
