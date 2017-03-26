@@ -1,19 +1,19 @@
 'use strict';
 
-const NODE_ENV = process.env.NODE_ENV || 'development';
-
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
-const rimraf = require('rimraf');
 const path = require('path');
 const dir = path.resolve.bind(path, __dirname);
 
-const ROOT = 'frontend';
-const ASSETS = 'public/assets/';
+const NODE_ENV = process.env.NODE_ENV || 'development';
+const FRONTEND_ROOT_FOLDER = 'frontend';
+const BUILD_FOLDER = 'public';
+const ASSETS_FOLDER = 'assets';
+const BASE64_LIMIT = 4096;
 
 module.exports = {
-  context: dir(ROOT),
+  context: dir(FRONTEND_ROOT_FOLDER),
 
   entry: {
     home: './home.js',
@@ -22,16 +22,16 @@ module.exports = {
   },
 
   output: {
-    path: dir(ASSETS),
-    publicPath: '/webpacking/' + ASSETS,
-    filename: addHash('[name].js', 'chunkhash'),
-    chunkFilename: addHash('[id].js', 'chunkhash'),
+    path: dir(BUILD_FOLDER, ASSETS_FOLDER),
+    publicPath: `/${ASSETS_FOLDER}/`,
+    filename: addHash('js/[name].js', 'chunkhash'),
+    chunkFilename: addHash('js/[id].js', 'chunkhash'),
     library: '[name]'
   },
 
   resolve: {
-    extensions: ['.jade', '.js', '.styl', '.css'],
-    modules: ['node_modules', 'legacy', dir(ROOT)],
+    extensions: ['.jade', '.js', '.styl'],
+    modules: ['node_modules', 'legacy', dir(FRONTEND_ROOT_FOLDER)],
     alias: { 'work': 'godwhy/oldschool' }
   },
 
@@ -62,17 +62,12 @@ module.exports = {
     }, {
       test: /\.(png|jpg|svg|ttf|eot|woff|woff2)$/,
       loader: 'url-loader',
-      options: { name: addHash('[path][name].[ext]', 'hash:6'), limit: 4096 }
+      options: { name: addHash('[path][name].[ext]', 'hash:6'), limit: BASE64_LIMIT }
     }],
     noParse: /node_modules\/(whatwg-fetch|babel-polyfill\/dist\/polyfill\.min)/
   },
 
   plugins: [
-    {
-      apply: (compiler) => {
-        rimraf.sync(compiler.options.output.path);
-      }
-    },
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
       NODE_ENV: JSON.stringify(NODE_ENV)
@@ -95,20 +90,14 @@ module.exports = {
       minChunks: Infinity
     }),
     new HtmlWebpackPlugin({
-      filename: './home.html',
+      filename: '../index.html',
       chunks: ['manifest', 'vendor', 'common', 'home']
     }),
     new HtmlWebpackPlugin({
-      filename: './about.html',
+      filename: '../about.html',
       chunks: ['manifest', 'vendor', 'common', 'about']
     })
   ],
-
-  watch: NODE_ENV === 'development',
-
-  watchOptions: {
-    aggregateTimeout: 100
-  },
 
   devtool: NODE_ENV === 'development' ? 'cheap-source-map' : 'source-map'
 };
