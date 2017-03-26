@@ -5,11 +5,12 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
+const rimraf = require('rimraf');
 const path = require('path');
 const dir = path.resolve.bind(path, __dirname);
 
 const ROOT = 'frontend';
-const ASSETS = 'public/assets';
+const ASSETS = 'public/assets/';
 
 module.exports = {
   context: dir(ROOT),
@@ -23,13 +24,13 @@ module.exports = {
   output: {
     path: dir(ASSETS),
     publicPath: '/webpacking/' + ASSETS,
-    filename: '[name].js',
-    chunkFilename: '[id].js',
+    filename: addHash('[name].js', 'chunkhash'),
+    chunkFilename: addHash('[id].js', 'chunkhash'),
     library: '[name]'
   },
 
   resolve: {
-    extensions: ['.jade', '.js', '.styl'],
+    extensions: ['.jade', '.js', '.styl', '.css'],
     modules: ['node_modules', 'legacy', dir(ROOT)],
     alias: { 'work': 'godwhy/oldschool' }
   },
@@ -61,12 +62,17 @@ module.exports = {
     }, {
       test: /\.(png|jpg|svg|ttf|eot|woff|woff2)$/,
       loader: 'url-loader',
-      options: { name: '[path][name].[ext]', limit: 4096 }
+      options: { name: addHash('[path][name].[ext]', 'hash:6'), limit: 4096 }
     }],
     noParse: /node_modules\/(whatwg-fetch|babel-polyfill\/dist\/polyfill\.min)/
   },
 
   plugins: [
+    {
+      apply: (compiler) => {
+        rimraf.sync(compiler.options.output.path);
+      }
+    },
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
       NODE_ENV: JSON.stringify(NODE_ENV)
@@ -115,4 +121,8 @@ if (NODE_ENV === 'production') {
       unsafe: true
     }
   }))
+}
+
+function addHash(template, hash) {
+  return NODE_ENV === 'development' ? template : template.replace(/\.[^.]+$/, `.[${hash}]$&`);
 }
