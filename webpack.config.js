@@ -16,6 +16,7 @@ module.exports = {
   context: dir(FRONTEND_ROOT_FOLDER),
 
   entry: {
+    index: ['react-hot-loader/patch', './index.js'],
     home: './home.js',
     about: './about.js',
     vendor: ['babel-polyfill/dist/polyfill.min.js', 'whatwg-fetch']
@@ -40,7 +41,7 @@ module.exports = {
       test: /\.js$/,
       exclude: /(node_modules|bower_components)/,
       loader: 'babel-loader',
-      options: { babelrc: false, presets: ['env'] }
+      options: { babelrc: false, presets: [['env', {"modules": false}], 'react'], plugins: ['react-hot-loader/babel'] }
     }, {
       test: /legacy\/godwhy\/oldschool\.js$/,
       include: /legacy\//,
@@ -60,6 +61,13 @@ module.exports = {
         { loader: 'stylus-loader', options: 'resolve url' }
       ]
     }, {
+      test: /\.css$/,
+      use: [
+        'style-loader',
+        'css-loader?modules',
+        'postcss-loader',
+      ],
+    }, {
       test: /\.(png|jpg|svg|ttf|eot|woff|woff2)$/,
       loader: 'url-loader',
       options: { name: addHash('[path][name].[ext]', 'hash:6'), limit: BASE64_LIMIT }
@@ -68,6 +76,8 @@ module.exports = {
   },
 
   plugins: [
+    new webpack.HotModuleReplacementPlugin(),
+    new webpack.NamedModulesPlugin(),
     new webpack.NoEmitOnErrorsPlugin(),
     new webpack.DefinePlugin({
       NODE_ENV: JSON.stringify(NODE_ENV)
@@ -91,6 +101,10 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       filename: '../index.html',
+      chunks: ['manifest', 'vendor', 'index']
+    }),
+    new HtmlWebpackPlugin({
+      filename: '../home.html',
       chunks: ['manifest', 'vendor', 'common', 'home']
     }),
     new HtmlWebpackPlugin({
@@ -99,7 +113,18 @@ module.exports = {
     })
   ],
 
-  devtool: NODE_ENV === 'development' ? 'cheap-source-map' : 'source-map'
+  devtool: NODE_ENV === 'development' ? 'cheap-source-map' : 'source-map',
+
+  devServer: {
+    hot: true,
+    open: true,
+    contentBase: dir(BUILD_FOLDER),
+    publicPath: `/${ASSETS_FOLDER}/`,
+  },
+
+  watchOptions: {
+    aggregateTimeout: 100,
+  }
 };
 
 if (NODE_ENV === 'production') {
